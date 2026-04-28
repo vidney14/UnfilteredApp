@@ -115,9 +115,24 @@ The application uses a combination of debugging, manual testing, and API validat
 - NeonDB Studio used for database validation  
 - Knex migrations verified  
 - Render logs monitored for backend errors  
-
 ---
 
+## 📸 Update 2 Screenshots
+
+<p align="center">
+  <img src="Screenshorts/1.png" width="23%" alt="Screenshot 1" />
+  <img src="Screenshorts/2.png" width="23%" alt="Screenshot 2" />
+  <img src="Screenshorts/3.png" width="23%" alt="Screenshot 3" />
+  <img src="Screenshorts/4.png" width="23%" alt="Screenshot 4" />
+</p>
+
+<p align="center">
+  <img src="Screenshorts/5.png" width="30%" alt="Screenshot 5" />
+  <img src="Screenshorts/6.png" width="30%" alt="Screenshot 6" />
+  <img src="Screenshorts/7.png" width="30%" alt="Screenshot 7" />
+</p>
+
+---
 ## 📁 Project Structure
 
 ```text
