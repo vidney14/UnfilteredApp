@@ -98,24 +98,28 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
     }
 
     fun fetchRooms() {
-        viewModelScope.launch {
-            try {
-                val response = repository.getRooms()
-                if (response.isSuccessful) {
-                    _rooms.value = response.body() ?: emptyList()
-                }
-            } catch (e: Exception) {
-                _error.value = "Failed to load rooms: ${e.message}"
+    viewModelScope.launch {
+        runCatching {
+            repository.getRooms()
+        }.onSuccess { result ->
+            if (result.isSuccessful) {
+                _rooms.value = result.body().orEmpty()
             }
+        }.onFailure { throwable ->
+            _error.value = "Failed to load rooms: ${throwable.message}"
         }
     }
+}
 
     fun joinRoom(roomId: Int) {
-        currentRoomId = roomId
-        _messages.value = emptyList()
+    currentRoomId = roomId
+
+    _messages.value = emptyList<Message>().also {
         socket?.emit("join_room", roomId)
-        fetchMessages(roomId)
     }
+
+    fetchMessages(roomId)
+}
 
     private fun fetchMessages(roomId: Int) {
         viewModelScope.launch {
