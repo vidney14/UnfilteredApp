@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.unfilteredapp.data.model.MoodCount
 import com.example.unfilteredapp.data.model.MoodLogEntry
 import com.example.unfilteredapp.ui.theme.SanctuaryDesign
+import com.example.unfilteredapp.ui.theme.moodAccentColor
 import com.example.unfilteredapp.viewmodel.AnalyticsState
 import com.example.unfilteredapp.viewmodel.MoodAnalyticsViewModel
 
@@ -140,12 +141,7 @@ fun AnalyticsContent(totalLogs: Int, counts: List<MoodCount>, logs: List<MoodLog
                 InsightCard(
                     title = "Dominant Energy",
                     description = "You've spent most of your time in a '${primaryMood?.modeType?.replace("_", " ")}' state.",
-                    accentColor = when (primaryMood?.modeType) {
-                        "high_energy_pleasant" -> Color(0xFFFBDA63)
-                        "low_energy_pleasant" -> Color(0xFF62F95D)
-                        "low_energy_unpleasant" -> Color(0xFF5D99F9)
-                        else -> Color(0xFFF83700)
-                    }
+                    accentColor = moodAccentColor(primaryMood?.modeType ?: "")
                 )
             }
         }
@@ -207,11 +203,11 @@ fun TotalLogsCard(count: Int) {
 @Composable
 fun MoodDistributionChart(counts: List<MoodCount>) {
     val total = counts.sumOf { it.count }.toFloat()
-    
+
     SanctuaryDesign.SanctuaryCard {
         if (counts.isEmpty()) {
             Text(
-                "Start logging to build your profile.", 
+                "Start logging to build your profile.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
@@ -219,13 +215,19 @@ fun MoodDistributionChart(counts: List<MoodCount>) {
             )
         } else {
             counts.forEachIndexed { index, item ->
-                val progress = if (total > 0) item.count / total else 0f
-                val color = when (item.modeType) {
-                    "high_energy_pleasant" -> Color(0xFFFBDA63)
-                    "low_energy_pleasant" -> Color(0xFF62F95D)
-                    "low_energy_unpleasant" -> Color(0xFF5D99F9)
-                    else -> Color(0xFFF83700)
-                }
+                val targetProgress = if (total > 0) item.count / total else 0f
+                val color = moodAccentColor(item.modeType)
+
+                // Animate progress bar fill on first composition
+                val animatedProgress by animateFloatAsState(
+                    targetValue = targetProgress,
+                    animationSpec = tween(
+                        durationMillis = 900,
+                        delayMillis = index * 120,
+                        easing = FastOutSlowInEasing
+                    ),
+                    label = "progress_${item.modeType}"
+                )
 
                 Column(modifier = Modifier.padding(vertical = 10.dp)) {
                     Row(
@@ -241,7 +243,7 @@ fun MoodDistributionChart(counts: List<MoodCount>) {
                             letterSpacing = 1.sp
                         )
                         Text(
-                            text = "${(progress * 100).toInt()}%",
+                            text = "${(animatedProgress * 100).toInt()}%",
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = color
@@ -257,7 +259,7 @@ fun MoodDistributionChart(counts: List<MoodCount>) {
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth(progress)
+                                .fillMaxWidth(animatedProgress)
                                 .fillMaxHeight()
                                 .clip(CircleShape)
                                 .background(color)
@@ -307,12 +309,7 @@ fun InsightCard(title: String, description: String, accentColor: Color) {
 
 @Composable
 fun RecentLogItem(log: MoodLogEntry) {
-    val accentColor = when (log.modeType) {
-        "high_energy_pleasant" -> Color(0xFFFBDA63)
-        "low_energy_pleasant" -> Color(0xFF62F95D)
-        "low_energy_unpleasant" -> Color(0xFF5D99F9)
-        else -> Color(0xFFF83700)
-    }
+    val accentColor = moodAccentColor(log.modeType)
 
     SanctuaryDesign.SanctuaryCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -323,7 +320,7 @@ fun RecentLogItem(log: MoodLogEntry) {
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(
-                        log.modeSubType.take(1).uppercase(), 
+                        log.modeSubType.take(1).uppercase(),
                         fontWeight = FontWeight.Black,
                         color = accentColor,
                         fontSize = 20.sp

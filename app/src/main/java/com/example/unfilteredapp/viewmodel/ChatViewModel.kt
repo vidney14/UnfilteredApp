@@ -1,5 +1,6 @@
 package com.example.unfilteredapp.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.unfilteredapp.data.api.NetworkConstants
@@ -49,12 +50,12 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
             socket?.on(Socket.EVENT_CONNECT) {
                 _isConnected.value = true
                 _error.value = null
-                println("SOCKET_IO: Connected")
+                Log.d(TAG, "Socket connected")
             }
 
             socket?.on("receive_message") { args ->
                 val data = args[0] as JSONObject
-                println("SOCKET_IO: Received RAW: $data")
+                Log.d(TAG, "Received message: ${data.optString("content", "")}")
                 viewModelScope.launch {
                     val incoming = Message(
                         id = data.optInt("id"),
@@ -159,5 +160,9 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         socket?.disconnect()
+    }
+
+    companion object {
+        private const val TAG = "ChatViewModel"
     }
 }
