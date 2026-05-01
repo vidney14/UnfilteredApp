@@ -19,9 +19,10 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.SentimentDissatisfied
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.*
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -205,7 +206,9 @@ fun CategoryCard(
     category: MoodCategoryItem,
     onClick: () -> Unit
 ) {
-    var isPressed by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
@@ -218,10 +221,11 @@ fun CategoryCard(
             .aspectRatio(0.85f)
             .graphicsLayer(scaleX = scale, scaleY = scale)
             .clip(RoundedCornerShape(32.dp))
-            .clickable { 
-                isPressed = true
-                onClick() 
-            },
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = onClick
+            ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {

@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.unfilteredapp.data.model.Message
@@ -46,6 +48,7 @@ fun ChatScreen(
     
     var textState by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
+    var showDisclaimerDialog by remember { mutableStateOf(true) }
 
     LaunchedEffect(room.id) {
         viewModel.joinRoom(room.id)
@@ -154,6 +157,37 @@ fun ChatScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp, top = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Info,
+                                    contentDescription = "Disclaimer",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    "Community Guidelines Active.\nMessages are monitored for vulgarity and hate speech.",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+                }
+                item {
                     AnimatedVisibility(
                         visible = error != null,
                         enter = expandVertically() + fadeIn(),
@@ -185,6 +219,29 @@ fun ChatScreen(
                 }
             }
         }
+    }
+
+    if (showDisclaimerDialog) {
+        AlertDialog(
+            onDismissRequest = { showDisclaimerDialog = false },
+            icon = { Icon(Icons.Default.Info, contentDescription = "Disclaimer Icon", tint = MaterialTheme.colorScheme.primary) },
+            title = { Text("Community Guidelines", fontWeight = FontWeight.Bold) },
+            text = { 
+                Text(
+                    "To ensure a supportive environment, please adhere to our rules:\n\n" +
+                    "• Be respectful and kind to everyone.\n" +
+                    "• No vulgar, explicit, or offensive language.\n" +
+                    "• Harassment and hate speech are strictly prohibited.\n" +
+                    "• Do not share personal or sensitive information.\n\n" +
+                    "Violations may result in a ban from the chat rooms. Thank you for helping keep this community safe!"
+                ) 
+            },
+            confirmButton = {
+                Button(onClick = { showDisclaimerDialog = false }) {
+                    Text("I Agree & Understand")
+                }
+            }
+        )
     }
 }
 

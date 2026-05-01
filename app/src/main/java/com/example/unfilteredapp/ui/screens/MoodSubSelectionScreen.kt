@@ -12,6 +12,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -125,7 +128,9 @@ fun MuseumMoodCard(
         }
     }
 
-    var isPressed by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
@@ -140,10 +145,11 @@ fun MuseumMoodCard(
             .graphicsLayer(scaleX = scale, scaleY = scale)
             .clip(RoundedCornerShape(32.dp))
             .background(accentColor)
-            .clickable { 
-                isPressed = true
-                onClick() 
-            }
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = onClick
+            )
             .padding(20.dp)
     ) {
         Column(

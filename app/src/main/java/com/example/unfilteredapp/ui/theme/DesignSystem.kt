@@ -8,6 +8,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +33,8 @@ object SanctuaryDesign {
         onClick: (() -> Unit)? = null,
         content: @Composable ColumnScope.() -> Unit
     ) {
-        var isPressed by remember { mutableStateOf(false) }
+        val interactionSource = remember { MutableInteractionSource() }
+        val isPressed by interactionSource.collectIsPressedAsState()
         val scale by animateFloatAsState(
             targetValue = if (isPressed) 0.98f else 1f,
             animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy),
@@ -42,10 +46,11 @@ object SanctuaryDesign {
                 .graphicsLayer(scaleX = scale, scaleY = scale)
                 .then(
                     if (onClick != null) {
-                        Modifier.clickable { 
-                            isPressed = true
-                            onClick() 
-                        }
+                        Modifier.clickable(
+                            interactionSource = interactionSource,
+                            indication = LocalIndication.current,
+                            onClick = onClick
+                        )
                     } else Modifier
                 ),
             shape = RoundedCornerShape(24.dp),
