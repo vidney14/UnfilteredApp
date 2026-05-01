@@ -439,13 +439,14 @@ fun PlaceDetailContent(place: PlaceResult, category: FilterItem) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        val detailContext = LocalContext.current
         Button(
             onClick = {
                 val uri = Uri.parse(
                     "geo:${place.geometry.location.lat},${place.geometry.location.lng}" +
                     "?q=${Uri.encode(place.name)}"
                 )
-                context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+                detailContext.startActivity(Intent(Intent.ACTION_VIEW, uri))
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = category.color),
