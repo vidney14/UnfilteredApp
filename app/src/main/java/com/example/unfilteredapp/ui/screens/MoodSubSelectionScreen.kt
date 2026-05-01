@@ -94,7 +94,7 @@ fun MoodSubSelectionScreen(
                 ) { index, mood ->
                     var visible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        kotlinx.coroutines.delay(index % 10 * 50L) // Staggered entrance
+                        kotlinx.coroutines.delay(index * 50L) // Staggered entrance
                         visible = true
                     }
 

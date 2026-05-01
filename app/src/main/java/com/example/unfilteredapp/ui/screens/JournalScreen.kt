@@ -175,6 +175,18 @@ fun JournalScreen(onBack: () -> Unit, viewModel: JournalViewModel) {
                             fontWeight = FontWeight.Normal
                         )
                     )
+                    // Word count indicator (bottom-right, subtle)
+                    if (textState.isNotBlank()) {
+                        val wordCount = textState.trim().split(Regex("\\s+")).size
+                        Text(
+                            text = "$wordCount ${if (wordCount == 1) "word" else "words"}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                            modifier = androidx.compose.ui.Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(bottom = 12.dp, end = 24.dp)
+                        )
+                    }
                 }
             }
 

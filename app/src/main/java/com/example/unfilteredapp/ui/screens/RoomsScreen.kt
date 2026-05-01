@@ -30,6 +30,7 @@ import com.example.unfilteredapp.ui.theme.SanctuaryDesign
 @Composable
 fun RoomsScreen(viewModel: com.example.unfilteredapp.viewmodel.ChatViewModel, onRoomClick: (Room) -> Unit) {
     val rooms by viewModel.rooms.collectAsState()
+    val error by viewModel.error.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.fetchRooms()
@@ -55,7 +56,31 @@ fun RoomsScreen(viewModel: com.example.unfilteredapp.viewmodel.ChatViewModel, on
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                if (rooms.isEmpty()) {
+                if (error != null && rooms.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = "Couldn't reach the sanctuaries",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = error ?: "",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                            Button(onClick = { viewModel.fetchRooms() }) {
+                                Icon(Icons.Default.Refresh, contentDescription = null)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Try Again")
+                            }
+                        }
+                    }
+                } else if (rooms.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             CircularProgressIndicator(modifier = Modifier.size(32.dp), color = MaterialTheme.colorScheme.primary)

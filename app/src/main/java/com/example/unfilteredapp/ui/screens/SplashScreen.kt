@@ -27,9 +27,15 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
         animationSpec = tween(durationMillis = 1000),
         label = "alpha"
     )
-    val scaleAnim = animateFloatAsState(
-        targetValue = if (startAnimation) 1.2f else 1f,
-        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+    // Gentle pulse: zoom to 1.08f then back to 1.0f instead of staying zoomed
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val scaleAnim by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.08f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(900, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
         label = "scale"
     )
 
@@ -51,7 +57,7 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(140.dp)
-                    .scale(scaleAnim.value)
+                    .scale(scaleAnim)
                     .alpha(alphaAnim.value)
             )
             

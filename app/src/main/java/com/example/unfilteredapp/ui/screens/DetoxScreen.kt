@@ -2,7 +2,10 @@ package com.example.unfilteredapp.ui.screens
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
@@ -111,9 +114,12 @@ fun DetoxScreen(onBack: () -> Unit, viewModel: PlacesViewModel = viewModel()) {
     var selectedFilterItem by remember { mutableStateOf(filters[0]) }
 
     // Fetch whenever filter changes OR user location first becomes available
+    // Only fetch if we actually have a real GPS location — don't silently fall back to Singapore
     LaunchedEffect(selectedFilterItem, userLocation) {
-        val loc = userLocation ?: singapore
-        viewModel.fetchNearbyPlaces(loc.latitude, loc.longitude, selectedFilterItem.apiType)
+        val loc = userLocation
+        if (loc != null) {
+            viewModel.fetchNearbyPlaces(loc.latitude, loc.longitude, selectedFilterItem.apiType)
+        }
     }
 
     val mapProperties by remember(locationPermissionGranted) {
@@ -125,6 +131,75 @@ fun DetoxScreen(onBack: () -> Unit, viewModel: PlacesViewModel = viewModel()) {
 
     val uiSettings by remember {
         mutableStateOf(MapUiSettings(zoomControlsEnabled = false, myLocationButtonEnabled = false))
+    }
+
+    // Show a permission denied banner if user denied location access
+    if (!locationPermissionGranted) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                uiSettings = uiSettings,
+                properties = remember { MapProperties(
+                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style)
+                ) }
+            )
+            // Dimmed overlay
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.85f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .padding(32.dp)
+                        .shadow(16.dp, RoundedCornerShape(28.dp)),
+                    shape = RoundedCornerShape(28.dp),
+                    color = MaterialTheme.colorScheme.surface
+                ) {
+                    Column(
+                        modifier = Modifier.padding(28.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.LocationOff,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            "Location Access Needed",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                        Text(
+                            "Unfiltered uses your location to find nearby parks, cafes, and calming spaces for your digital detox.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                        Button(
+                            onClick = {
+                                val intent = Intent(
+                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", context.packageName, null)
+                                )
+                                context.startActivity(intent)
+                            },
+                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Icon(Icons.Default.Settings, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Open App Settings", fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        }
+        return
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -365,7 +440,13 @@ fun PlaceDetailContent(place: PlaceResult, category: FilterItem) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { /* Directions */ },
+            onClick = {
+                val uri = Uri.parse(
+                    "geo:${place.geometry.location.lat},${place.geometry.location.lng}" +
+                    "?q=${Uri.encode(place.name)}"
+                )
+                context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+            },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = category.color),
             shape = RoundedCornerShape(16.dp)

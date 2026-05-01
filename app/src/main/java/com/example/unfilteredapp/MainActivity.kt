@@ -45,22 +45,11 @@ import com.example.unfilteredapp.viewmodel.ChatViewModel
 import com.example.unfilteredapp.data.repository.ChatRepository
 import com.example.unfilteredapp.data.repository.SpotifyRepository
 import com.example.unfilteredapp.viewmodel.MusicViewModel
+import com.example.unfilteredapp.viewmodel.MoodViewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
-
-// Consolidated ViewModels to resolve reference issues
-
-class MoodViewModel : ViewModel() {
-    private val _selectedMood = MutableStateFlow<String?>(null)
-    val selectedMood: StateFlow<String?> = _selectedMood
-    fun selectMood(moodTag: String) {
-        _selectedMood.value = moodTag
-    }
-}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -246,28 +235,45 @@ fun CustomBottomAppBar(navController: androidx.navigation.NavHostController) {
                                 restoreState = true
                             }
                         }
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .background(
-                                if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                                else Color.Transparent,
-                                CircleShape
-                            ),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
-                        Icon(
-                            item.icon,
-                            contentDescription = item.label,
+                        Box(
                             modifier = Modifier
-                                .size(26.dp)
-                                .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale),
-                            tint = if (isSelected) MaterialTheme.colorScheme.primary 
-                                   else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                        )
+                                .size(44.dp)
+                                .background(
+                                    if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                    else Color.Transparent,
+                                    CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                item.icon,
+                                contentDescription = item.label,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale),
+                                tint = if (isSelected) MaterialTheme.colorScheme.primary
+                                       else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                            )
+                        }
+                        AnimatedVisibility(
+                            visible = isSelected,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
+                        ) {
+                            Text(
+                                text = item.label,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
@@ -286,8 +292,6 @@ fun AppNavigation(
     musicViewModel: MusicViewModel
 ) {
     val moodViewModel: MoodViewModel = viewModel()
-    
-    val startDestination = if (authViewModel.isLoggedIn()) Screen.MoodCategory else Screen.Login
 
     NavHost(
         navController = navController,
@@ -372,11 +376,29 @@ fun AppNavigation(
             )
         }
         composable<Screen.MoodSummary> {
-            MoodSummaryScreen(onBack = { 
-                navController.navigate(Screen.MoodCategory) {
-                    popUpTo(Screen.MoodCategory) { inclusive = true }
+            MoodSummaryScreen(
+                onBack = {
+                    navController.navigate(Screen.MoodCategory) {
+                        popUpTo(Screen.MoodCategory) { inclusive = true }
+                    }
+                },
+                viewModel = moodViewModel,
+                onNavigateToMusic = {
+                    navController.navigate(Screen.Music) {
+                        popUpTo(Screen.MoodCategory) { inclusive = false }
+                    }
+                },
+                onNavigateToRooms = {
+                    navController.navigate(Screen.Rooms) {
+                        popUpTo(Screen.MoodCategory) { inclusive = false }
+                    }
+                },
+                onNavigateToJournal = {
+                    navController.navigate(Screen.Journal) {
+                        popUpTo(Screen.MoodCategory) { inclusive = false }
+                    }
                 }
-            }, viewModel = moodViewModel)
+            )
         }
         composable<Screen.Journal> {
             JournalScreen(onBack = { navController.popBackStack() }, viewModel = journalViewModel)

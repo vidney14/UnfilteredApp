@@ -34,6 +34,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.unfilteredapp.ui.theme.SanctuaryDesign
+import com.example.unfilteredapp.ui.theme.MoodHighEnergyPleasantStart
+import com.example.unfilteredapp.ui.theme.MoodHighEnergyPleasantEnd
+import com.example.unfilteredapp.ui.theme.MoodLowEnergyPleasantStart
+import com.example.unfilteredapp.ui.theme.MoodLowEnergyPleasantEnd
+import com.example.unfilteredapp.ui.theme.MoodLowEnergyUnpleasantStart
+import com.example.unfilteredapp.ui.theme.MoodLowEnergyUnpleasantEnd
+import com.example.unfilteredapp.ui.theme.MoodHighEnergyUnpleasantStart
+import com.example.unfilteredapp.ui.theme.MoodHighEnergyUnpleasantEnd
 import com.example.unfilteredapp.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,31 +55,35 @@ fun MoodCategoryScreen(
     val currentUser by authViewModel.currentUser.collectAsState()
     val categories = listOf(
         MoodCategoryItem(
-            "High Energy\nPleasant", 
-            "high_energy_pleasant", 
-            Color(0xFFFBDA63), 
-            Color(0xFFFBB140),
+            "High Energy\nPleasant",
+            "Excited, Happy, Joyful",
+            "high_energy_pleasant",
+            MoodHighEnergyPleasantStart,
+            MoodHighEnergyPleasantEnd,
             Icons.Default.ElectricBolt
         ),
         MoodCategoryItem(
-            "Low Energy\nPleasant", 
-            "low_energy_pleasant", 
-            Color(0xFF62F95D), 
-            Color(0xFF058C00),
+            "Low Energy\nPleasant",
+            "Calm, Relaxed, Content",
+            "low_energy_pleasant",
+            MoodLowEnergyPleasantStart,
+            MoodLowEnergyPleasantEnd,
             Icons.Default.Favorite
         ),
         MoodCategoryItem(
-            "Low Energy\nUnpleasant", 
-            "low_energy_unpleasant", 
-            Color(0xFF5D99F9), 
-            Color(0xFF2B7CFF),
+            "Low Energy\nUnpleasant",
+            "Sad, Bored, Fatigued",
+            "low_energy_unpleasant",
+            MoodLowEnergyUnpleasantStart,
+            MoodLowEnergyUnpleasantEnd,
             Icons.Default.WaterDrop
         ),
         MoodCategoryItem(
-            "High Energy\nUnpleasant", 
-            "high_energy_unpleasant", 
-            Color(0xFFF83700), 
-            Color(0xFFBF2A00),
+            "High Energy\nUnpleasant",
+            "Angry, Anxious, Stressed",
+            "high_energy_unpleasant",
+            MoodHighEnergyUnpleasantStart,
+            MoodHighEnergyUnpleasantEnd,
             Icons.Default.SentimentDissatisfied
         )
     )
@@ -195,6 +207,7 @@ fun MoodCategoryScreen(
 
 data class MoodCategoryItem(
     val title: String,
+    val descriptor: String,
     val modeType: String,
     val startColor: Color,
     val endColor: Color,
@@ -263,6 +276,12 @@ fun CategoryCard(
                     ),
                     color = Color.White,
                     fontSize = 18.sp
+                )
+                Text(
+                    text = category.descriptor,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White.copy(alpha = 0.75f),
+                    fontSize = 11.sp
                 )
             }
         }
