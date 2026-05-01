@@ -1,52 +1,124 @@
-# 🌿 Unfiltered
+## Unfiltered - Your Emotional Companion 
 
-**Unfiltered** is a modern Android application designed for emotional well-being. It helps users track their moods, journal their thoughts, connect with others in real-time community chat rooms, discover music based on how they feel, and find nearby places for a digital detox — all wrapped in a sleek, dark-themed UI.
+*Unfiltered* is a modern Android application designed for emotional well-being. It helps users track their moods, journal their thoughts, connect with others in real-time community chat rooms, discover music based on how they feel, and find nearby places for a digital detox — all wrapped in a sleek, dark-themed UI.
 
-Built entirely with **Jetpack Compose** (100% Kotlin) and backed by a **Node.js / PostgreSQL** REST + WebSocket API.
+Built entirely with *Jetpack Compose* (100% Kotlin) and backed by a *Node.js / PostgreSQL* REST + WebSocket API.
+
+---
+
+### 🏗️ Architecture
+
+#### MVVM Pattern
+
+- **View Layer**
+  - Built using Jetpack Compose UI
+  - Screens include:
+    - Login / Signup
+    - Mood Selection
+    - Journal
+    - Music
+    - Chat Rooms
+    - Detox Map
+
+- **ViewModel Layer**
+  - Handles state management using **StateFlow**
+  - Uses **Kotlin Coroutines** for asynchronous operations
+
+- **Data Layer**
+  - Implements **Repository Pattern**
+  - API integration using:
+    - Retrofit (REST APIs)
+    - Socket.io (real-time communication)
+
+---
+
+### 🗄️ Backend & Database
+
+- **Backend**: Node.js (Express) deployed on Render  
+- **Database**: PostgreSQL (NeonDB)  
+- **Authentication**: JWT-based login system  
+- **ORM**: Knex.js for schema migrations  
+<img width="1600" height="914" alt="WhatsApp Image 2026-04-28 at 3 58 09 PM" src="https://github.com/user-attachments/assets/655444a9-1f1d-43e6-8d8b-451301153c53" />
+
+---
+
+## 🔀 Navigation Flow
+
+The app uses a *single-activity, type-safe* navigation graph:
+
+| Route | Screen |
+|---|---|
+| Splash | Animated splash screen |
+| Login | Login form |
+| Signup | Registration form |
+| MoodCategory | 4-quadrant mood energy home screen |
+| MoodSubSelection(modeType) | Granular mood selection |
+| MoodSummary | Post-mood-selection summary |
+| Journal | Personal journal |
+| Music | Spotify mood music |
+| Rooms | Chat room list |
+| Chat(roomId, roomName, moodTag, description) | Live chat room |
+| Detox | Google Maps detox explore |
+| Analytics | Mood analytics dashboard |
+
 
 ---
 
 ## ✨ Features
 
-| Feature | Description |
-|---|---|
-| 🎭 **Mood Wheel** | A comprehensive wheel with 100+ mood sub-types across 4 energy quadrants. Users select their current mood each session. |
-| 📊 **Mood Analytics** | Visual analytics dashboard showing mood logs over the past 7 days — total logs, mood distribution, and daily breakdowns. |
-| 📓 **Journal** | A personal journal where users can write and view past entries, all stored securely in the backend. |
-| 🎵 **Music** | Spotify-powered music recommendations that match the user's current mood using the Spotify Web API. |
-| 💬 **Sanctuaries (Chat)** | Real-time community chat rooms powered by **Socket.io**. Rooms are tagged by mood for contextual conversations. |
-| 🗺️ **Detox & Explore** | Location-based "digital detox" feature. Uses **Google Maps** + **Places API** to show nearby parks, cafes, gyms, and restaurants based on the user's current location. |
-| 🔐 **Auth** | Full email/password registration and login with **JWT** token-based authentication. Auto-login on app restart via persisted token. |
+| Feature | Description | Status |
+|---|---|---|
+| 🎭 *Mood Wheel* | A comprehensive wheel with 100+ mood sub-types across 4 energy quadrants. Users select their current mood each session. | ✅ Completed |
+| 📊 *Mood Analytics* | Visual analytics dashboard showing mood logs over the past 7 days — total logs, mood distribution, and daily breakdowns. | ✅ Completed |
+| 📓 *Journal* | A personal journal where users can write and view past entries, all stored securely in the backend. | ✅ Completed |
+| 🎵 *Music* | Spotify-powered music recommendations that match the user's current mood using the Spotify Web API. |  almost completed only disclaimer message before joining room left |
+| 💬 *Sanctuaries (Chat)* | Real-time community chat rooms powered by *Socket.io*. Rooms are tagged by mood for contextual conversations. | ✅ Completed |
+| 🗺️ *Detox & Explore* | Location-based "digital detox" feature. Uses *Google Maps* + *Places API* to show nearby parks, cafes, gyms, and restaurants based on the user's current location. | ✅ Completed |
+| 🔐 *Auth* | Full email/password registration and login with *JWT* token-based authentication. Auto-login on app restart via persisted token. | ✅ Completed |
+
+## 🧪 Testing Strategy
+
+The application uses a combination of debugging, manual testing, and API validation to ensure reliability and performance.
 
 ---
 
-## 🛠️ Tech Stack
+### 🔹 Runtime Debugging
 
-### Android
-- **Language**: Kotlin
-- **UI**: Jetpack Compose + Material 3
-- **Architecture**: MVVM (ViewModel + StateFlow + Repository pattern)
-- **Navigation**: Jetpack Navigation Compose (type-safe routes via `@Serializable`)
-- **Networking**: Retrofit 2 + OkHttp + kotlinx.serialization
-- **Real-time**: Socket.io client (`io.socket:socket.io-client:2.1.0`)
-- **Maps**: Google Maps Compose + Play Services Maps & Location
-- **Music**: Spotify Web API (Client Credentials flow)
-- **Image Loading**: Coil
-- **DI / Build**: Gradle Version Catalog (`libs.versions.toml`) + Secrets Gradle Plugin
-- **Min SDK**: 24 (Android 7.0+) | **Target SDK**: 35
-
-### Backend
-- **Runtime**: Node.js
-- **Database**: PostgreSQL (hosted on [Neon](https://neon.tech))
-- **Hosting**: [Render](https://render.com) — `https://unfilteredapp-backend.onrender.com`
-- **Real-time**: Socket.io
-- **Auth**: JWT
+- Android Studio Logcat for StateFlow & ViewModel logs  
+- Breakpoints for state inspection  
+- Network Inspector for API call tracing  
+- Socket.io logs for real-time chat debugging  
 
 ---
 
+### 🔹 Manual Testing
+
+- End-to-end flow: Login → Mood → Journal → Music → Chat  
+- Mood navigation tested across all 4 quadrants  
+- Journal (text + voice) tested on physical device  
+- Maps tested using live GPS location  
+
+---
+
+### 🔹 Auth & State Testing
+
+- JWT persistence tested across app restarts  
+- Auto-login validation via Splash screen  
+- Session expiry and logout handling  
+- SharedPreferences token storage verified  
+
+---
+
+### 🔹 API & Database Testing
+
+- Postman used for API endpoint testing  
+- NeonDB Studio used for database validation  
+- Knex migrations verified  
+- Render logs monitored for backend errors  
+---
 ## 📁 Project Structure
 
-```
+```text
 UnfilteredApp/
 ├── app/src/main/java/com/example/unfilteredapp/
 │   ├── MainActivity.kt              # Single Activity — sets up nav graph + bottom bar
@@ -101,185 +173,58 @@ UnfilteredApp/
 └── gradle/
     └── libs.versions.toml           # Centralized dependency version catalog
 ```
+## 🤖 AI Usage Statement
+
+AI tools (primarily ChatGPT) were used during the development of this project as a support tool, not as a replacement for understanding.
+
+### 🔹 Where & How AI Was Used
+- Used to **brainstorm feature ideas** (e.g., mood tracking, anonymous chat rooms)
+- Helped in **debugging errors** in Kotlin, API calls, and Gradle issues
+- Assisted in **understanding concepts** like MVVM architecture, StateFlow, and API integration
+- Provided guidance for **UI improvements in Jetpack Compose**
+- Helped refine **README documentation and structure**
+
+### 🔹 Example Prompts
+- "Help me understand this part of my ViewModel code and how data is flowing"
+- "Explain how StateFlow is being used in my app and why it is better than LiveData here"
+- "Where should I store and use API keys like Spotify and Google Maps in my Android project?"
+- "Why is my Retrofit API call not returning data even though the endpoint is correct?"
+- "Help me debug this issue where my UI is not updating after state change"
+- "How do I integrate Socket.io properly for real-time chat in Android?"
+- "What is the correct way to structure MVVM in a multi-screen Compose app?"
+
+### 🔹 Helpfulness
+AI was helpful in:
+- Speeding up debugging and reducing development time  
+- Explaining complex concepts in a simpler way  
+- Suggesting better structure and design approaches  
+
+### 🔹 Limitations & Corrections
+- Some AI suggestions were **generic or not directly compatible** with the project setup  
+- Required **manual modification and debugging** to fit the app’s architecture  
+- Certain API integrations (e.g., Socket.io, Spotify) needed **custom fixes beyond AI suggestions**  
+- Verified outputs using official documentation and testing  
+
+### 🔹 Understanding
+All AI-generated suggestions were **carefully reviewed, tested, and modified** before implementation.  
+The final code reflects my understanding of:
+- MVVM architecture  
+- State management using StateFlow  
+- API integration and asynchronous programming  
 
 ---
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-| Tool | Version |
-|---|---|
-| Android Studio | Ladybug (2024.2.x) or newer |
-| JDK | 11+ |
-| Android SDK | API 35 |
-| A physical device or emulator | API 24+ |
-
----
-
-### Step 1 — Clone the Repository
-
-```bash
-git clone https://github.com/vidney14/UnfilteredApp.git
-cd UnfilteredApp
-```
-
----
-
-### Step 2 — Configure `local.properties`
-
-This file lives in the root of the project and is **never committed to Git**. Create it if it doesn't exist, or add the following keys to the existing file:
-
-```properties
-# Android SDK path (auto-generated by Android Studio)
-sdk.dir=/Users/<your-username>/Library/Android/sdk
-
-# Google Maps API Key
-# Get one from: https://console.cloud.google.com → Maps SDK for Android + Places API
-MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
-
-# Spotify API credentials
-# Get from: https://developer.spotify.com/dashboard → Create an App
-SPOTIFY_CLIENT_ID=YOUR_SPOTIFY_CLIENT_ID
-SPOTIFY_CLIENT_SECRET=YOUR_SPOTIFY_CLIENT_SECRET
-```
-
-> **Important:** Enable **Maps SDK for Android** AND **Places API (New)** for your Google API key in the Google Cloud Console.
-
----
-
-### Step 3 — Backend URL
-
-The app points to the live production backend by default. You can verify or change this in:
-
-**`app/src/main/java/com/example/unfilteredapp/data/api/NetworkConstants.kt`**
-```kotlin
-object NetworkConstants {
-    const val BASE_URL = "https://unfilteredapp-backend.onrender.com/"
-    val SOCKET_URL = BASE_URL.removeSuffix("/")      // For Socket.io
-    const val GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/"
-    val MAPS_API_KEY = BuildConfig.MAPS_API_KEY
-}
-```
-
-To run a **local backend**, replace `BASE_URL` with your machine's IP (e.g., `http://10.0.2.2:3000/` for the Android emulator, or `http://<your-local-ip>:3000/` for a physical device).
-
-> 📦 Backend repository: [UnfilteredApp-Backend](https://github.com/vidney14/UnfilteredApp-Backend)
-
----
-
-### Step 4 — Open in Android Studio
-
-1. Open **Android Studio**
-2. Click **File → Open** and select the `UnfilteredApp` folder
-3. Wait for Gradle to sync (this downloads all dependencies automatically)
-4. If prompted, click **Sync Now**
-
----
-
-### Step 5 — Run the App
-
-1. Connect a physical Android device via USB (enable USB debugging) **or** launch an emulator (API 24+)
-2. Select your device in the device dropdown at the top of Android Studio
-3. Click the ▶ **Run** button (or press `Shift + F10`)
-
-The app will build and launch. If it's your first run, you'll be taken to the **Signup** screen.
-
----
-
-## 🔑 Authentication Flow
-
-```
-App Launch
-    └── SplashScreen (animated logo)
-            ├── Token found in SharedPreferences → MoodCategoryScreen (auto-login)
-            └── No token → LoginScreen
-                    └── Signup → LoginScreen → MoodCategoryScreen
-```
-
-- JWT token is stored in `SharedPreferences` under the key `jwt_token`
-- All authenticated API requests include `Authorization: Bearer <token>` via an OkHttp interceptor
-- Logout clears the token and navigates back to `LoginScreen`
-
----
-
-## 🗺️ Navigation Graph
-
-The app uses a **single-activity, type-safe** navigation graph:
-
-| Route | Screen |
-|---|---|
-| `Splash` | Animated splash screen |
-| `Login` | Login form |
-| `Signup` | Registration form |
-| `MoodCategory` | 4-quadrant mood energy home screen |
-| `MoodSubSelection(modeType)` | Granular mood selection |
-| `MoodSummary` | Post-mood-selection summary |
-| `Journal` | Personal journal |
-| `Music` | Spotify mood music |
-| `Rooms` | Chat room list |
-| `Chat(roomId, roomName, moodTag, description)` | Live chat room |
-| `Detox` | Google Maps detox explore |
-| `Analytics` | Mood analytics dashboard |
-
-The **bottom navigation bar** shows 5 tabs: **Journal**, **Music**, **Mood**, **Rooms**, **Detox**. It is hidden on `Login`, `Signup`, `Chat`, and `Splash` screens.
-
----
-
-## 🔌 Key Integrations
-
-### Spotify (Music Screen)
-- Uses the [Client Credentials Flow](https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow) — no user login required
-- Token is fetched from `https://accounts.spotify.com/api/token` and cached in memory with expiry
-- Tracks are searched via `/v1/search` based on mood-mapped keywords
-
-### Google Maps & Places (Detox Screen)
-- Uses `maps-compose` for the embedded map view
-- Requests `ACCESS_FINE_LOCATION` and `ACCESS_COARSE_LOCATION` permissions at runtime
-- Nearby places are fetched via `https://maps.googleapis.com/maps/api/place/nearbysearch/json`
-- Categories: Parks, Cafes, Gyms, Restaurants
-
-### Socket.io (Chat Screen)
-- Connects to `SOCKET_URL` using `polling` → `websocket` transports with auto-reconnect
-- Events: `join_room`, `send_message`, `receive_message`
-- Optimistic UI: messages appear instantly (id = null) and are replaced when the server confirms
-
----
-
-## 📦 Key Dependencies
-
-| Library | Purpose |
-|---|---|
-| `androidx.navigation:navigation-compose` | Type-safe in-app navigation |
-| `retrofit2:retrofit` | HTTP client |
-| `com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter` | JSON serialization |
-| `com.squareup.okhttp3:logging-interceptor` | Network logging |
-| `io.socket:socket.io-client:2.1.0` | Real-time WebSocket via Socket.io |
-| `com.google.maps.android:maps-compose` | Google Maps in Compose |
-| `com.google.android.gms:play-services-maps` | Google Maps SDK |
-| `com.google.android.gms:play-services-location` | GPS location |
-| `io.coil-kt:coil-compose` | Async image loading |
-| `com.google.android.libraries.mapsplatform.secrets-gradle-plugin` | Secure API key management |
-
----
-
-## 📸 Screenshots
+## 📸 Update 2 Screenshots
 
 <p align="center">
-  <img width="250" alt="Signup" src="https://github.com/user-attachments/assets/45d6ef45-a7eb-478a-acf0-d9baaa12e305" />
-  <img width="250" alt="Mood" src="https://github.com/user-attachments/assets/15c872f1-e783-4264-8957-806a948f48be" />
-  <img width="250" alt="Rooms" src="https://github.com/user-attachments/assets/bfb9d27e-a2b5-4d1c-913b-0ec2fd656a90" />
+  <img src="Screenshorts/1.png" width="23%" alt="Screenshot 1" />
+  <img src="Screenshorts/2.png" width="23%" alt="Screenshot 2" />
+  <img src="Screenshorts/3.png" width="23%" alt="Screenshot 3" />
+  <img src="Screenshorts/4.png" width="23%" alt="Screenshot 4" />
 </p>
 
----
+<p align="center">
+  <img src="Screenshorts/5.png" width="30%" alt="Screenshot 5" />
+  <img src="Screenshorts/6.png" width="30%" alt="Screenshot 6" />
+  <img src="Screenshorts/7.png" width="30%" alt="Screenshot 7" />
+</p>
 
-## 🤖 Responsible Use of AI
-
-AI tools were used to accelerate development in the following areas:
-
-- **Architecture**: Refining MVVM patterns and StateFlow management
-- **Animations**: Implementing smooth transitions and micro-interactions in Compose
-- **Security**: Best practices for API key management and authentication flows
-- **Problem Solving**: Debugging WebSocket connectivity, duplicate message handling, and complex UI layouts
-
-*All AI-generated code was reviewed, debugged, and integrated manually to ensure correctness and project integrity.*

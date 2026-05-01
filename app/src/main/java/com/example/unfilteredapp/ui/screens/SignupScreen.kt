@@ -37,6 +37,10 @@ fun SignupScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     val authState by viewModel.authState.collectAsState()
+    
+    val passwordsDoNotMatch = password.isNotEmpty() &&
+            confirmPassword.isNotEmpty() &&
+            password != confirmPassword
 
     LaunchedEffect(authState) {
         if (authState is AuthState.RegistrationSuccess) {
@@ -131,8 +135,22 @@ fun SignupScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                isError = password.isNotEmpty() && confirmPassword.isNotEmpty() && password != confirmPassword
+                isError = passwordsDoNotMatch
             )
+            AnimatedVisibility(
+                visible = passwordsDoNotMatch,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Text(
+                    text = "Passwords do not match",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                )
+            }
 
             AnimatedVisibility(
                 visible = authState is AuthState.Error,
