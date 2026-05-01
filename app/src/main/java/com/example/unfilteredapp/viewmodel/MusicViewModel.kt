@@ -15,22 +15,35 @@ sealed class MusicState {
     data class Error(val message: String) : MusicState()
 }
 
-class MusicViewModel(private val repository: SpotifyRepository) : ViewModel() {
+class MusicViewModel(
+    private val repository: SpotifyRepository
+) : ViewModel() {
+
     private val _musicState = MutableStateFlow<MusicState>(MusicState.Idle)
-    val musicState: StateFlow<MusicState> = _musicState
+    val musicState: StateFlow<MusicState>
+        get() = _musicState
 
     fun loadMoodSuggestions(mood: String) {
+        if (mood.isBlank()) {
+            _musicState.value = MusicState.Error("Please enter a mood")
+            return
+        }
+
         viewModelScope.launch {
             _musicState.value = MusicState.Loading
-            try {
-                val tracks = repository.getMoodSuggestions(mood)
-                if (tracks.isNotEmpty()) {
-                    _musicState.value = MusicState.Success(tracks)
+
+            runCatching {
+                repository.getMoodSuggestions(mood.trim())
+            }.onSuccess { tracks ->
+                _musicState.value = if (tracks.isNotEmpty()) {
+                    MusicState.Success(tracks)
                 } else {
-                    _musicState.value = MusicState.Error("No suggestions found for this mood")
+                    MusicState.Error("No suggestions found for this mood")
                 }
-            } catch (e: Exception) {
-                _musicState.value = MusicState.Error(e.message ?: "Unknown error occurred")
+            }.onFailure { exception ->
+                _musicState.value = MusicState.Error(
+                    exception.message ?: "Unknown error occurred"
+                )
             }
         }
     }
