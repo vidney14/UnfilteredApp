@@ -15,37 +15,47 @@ sealed class JournalState {
     data class Error(val message: String) : JournalState()
 }
 
-class JournalViewModel(private val repository: JournalRepository) : ViewModel() {
+class JournalViewModel(
+    private val repository: JournalRepository
+) : ViewModel() {
+
     private val _state = MutableStateFlow<JournalState>(JournalState.Idle)
-    val state: StateFlow<JournalState> = _state
+    val state: StateFlow<JournalState>
+        get() = _state
 
     fun fetchEntries() {
         viewModelScope.launch {
             _state.value = JournalState.Loading
-            try {
-                val response = repository.getEntries()
-                if (response.isSuccessful && response.body() != null) {
-                    _state.value = JournalState.Success(response.body()!!)
+
+            runCatching {
+                repository.getEntries()
+            }.onSuccess { response ->
+                val entries = response.body()
+
+                _state.value = if (response.isSuccessful && entries != null) {
+                    JournalState.Success(entries)
                 } else {
-                    _state.value = JournalState.Error("Failed to fetch entries")
+                    JournalState.Error("Failed to fetch entries")
                 }
-            } catch (e: Exception) {
-                _state.value = JournalState.Error(e.localizedMessage ?: "Unknown error")
+            }.onFailure { error ->
+                _state.value = JournalState.Error(
+                    error.localizedMessage ?: "Unknown error"
+                )
             }
         }
     }
 
     fun addEntry(content: String) {
-        if (content.isBlank()) return
-        
+        val trimmedContent = content.trim()
+        if (trimmedContent.isEmpty()) return
+
         viewModelScope.launch {
-            try {
-                val response = repository.saveEntry(content)
+            runCatching {
+                repository.saveEntry(trimmedContent)
+            }.onSuccess { response ->
                 if (response.isSuccessful) {
-                    fetchEntries() // Refresh the list
+                    fetchEntries()
                 }
-            } catch (e: Exception) {
-                // Handle failure
             }
         }
     }
