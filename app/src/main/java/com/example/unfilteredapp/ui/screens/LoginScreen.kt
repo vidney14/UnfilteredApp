@@ -115,6 +115,14 @@ fun LoginScreen(
                     unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                 )
             )
+            Text(
+                text = "Enter your email and password to continue",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp)
+            )
 
             AnimatedVisibility(
                 visible = authState is AuthState.Error,
@@ -139,7 +147,9 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(16.dp),
-                enabled = authState !is AuthState.Loading,
+                enabled = authState !is AuthState.Loading &&
+                        email.isNotBlank() &&
+                        password.isNotBlank(),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
             ) {
                 if (authState is AuthState.Loading) {
