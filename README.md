@@ -71,7 +71,7 @@ The app uses a *single-activity, type-safe* navigation graph:
 | 🎭 *Mood Wheel* | A comprehensive wheel with 100+ mood sub-types across 4 energy quadrants. Users select their current mood each session. | ✅ Completed |
 | 📊 *Mood Analytics* | Visual analytics dashboard showing mood logs over the past 7 days — total logs, mood distribution, and daily breakdowns. | ✅ Completed |
 | 📓 *Journal* | A personal journal where users can write and view past entries, all stored securely in the backend. | ✅ Completed |
-| 🎵 *Music* | Spotify-powered music recommendations that match the user's current mood using the Spotify Web API. |  almost completed only disclaimer message before joining room left |
+| 🎵 *Music* | Spotify-powered music recommendations that match the user's current mood using the Spotify Web API. |   ✅ Completed |
 | 💬 *Sanctuaries (Chat)* | Real-time community chat rooms powered by *Socket.io*. Rooms are tagged by mood for contextual conversations. | ✅ Completed |
 | 🗺️ *Detox & Explore* | Location-based "digital detox" feature. Uses *Google Maps* + *Places API* to show nearby parks, cafes, gyms, and restaurants based on the user's current location. | ✅ Completed |
 | 🔐 *Auth* | Full email/password registration and login with *JWT* token-based authentication. Auto-login on app restart via persisted token. | ✅ Completed |
