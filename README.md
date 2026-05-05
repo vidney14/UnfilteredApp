@@ -29,6 +29,7 @@ Built entirely with *Jetpack Compose* (100% Kotlin) and backed by a *Node.js / P
   - API integration using:
     - Retrofit (REST APIs)
     - Socket.io (real-time communication)
+<img width="1600" height="914" alt="WhatsApp Image 2026-04-28 at 3 58 09 PM" src="https://github.com/user-attachments/assets/655444a9-1f1d-43e6-8d8b-451301153c53" />
 
 ---
 
@@ -37,8 +38,12 @@ Built entirely with *Jetpack Compose* (100% Kotlin) and backed by a *Node.js / P
 - **Backend**: Node.js (Express) deployed on Render  
 - **Database**: PostgreSQL (NeonDB)  
 - **Authentication**: JWT-based login system  
-- **ORM**: Knex.js for schema migrations  
-<img width="1600" height="914" alt="WhatsApp Image 2026-04-28 at 3 58 09 PM" src="https://github.com/user-attachments/assets/655444a9-1f1d-43e6-8d8b-451301153c53" />
+- **ORM**: Knex.js for schema migrations
+- **NEON**
+<img width="1453" height="746" alt="Screenshot 2026-05-05 at 4 15 41 PM" src="https://github.com/user-attachments/assets/b30b8b25-b226-49ce-b2f6-6ccdbe5248b1" />
+
+- **Render**
+<img width="1453" height="746" alt="Screenshot 2026-05-05 at 4 16 40 PM" src="https://github.com/user-attachments/assets/f07d71b5-4216-46b9-8e50-bef8d2f0dc81" />
 
 ---
 
