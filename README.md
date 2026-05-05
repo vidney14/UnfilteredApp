@@ -234,7 +234,7 @@ The final code reflects my understanding of:
 - API integration and asynchronous programming  
 
 ---
-## 📸 Update 2 Screenshots
+## 📸 Screenshots
 
 <p align="center">
   <img src="Screenshorts/1.png" width="23%" alt="Screenshot 1" />
