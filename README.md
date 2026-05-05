@@ -6,6 +6,22 @@ Built entirely with *Jetpack Compose* (100% Kotlin) and backed by a *Node.js / P
 
 ---
 
+## 🚨 Important: Code Contribution Review
+
+> **Please review our separate contribution breakdown repository for individual code ownership:**  
+> 🔗 **https://github.com/ashish19-bu/UnfilteredApp-Code-Contributions**
+
+This project was completed collaboratively by all team members, with each person responsible for specific frontend and backend components.
+
+Earlier in development, some commits were pushed through shared or centralized accounts, so the commit history in this working repository does not fully represent each individual’s contribution. After asking for clarification on Piazza, we understood that contribution visibility was important.
+
+We initially considered separating work through branches in the main working repository, but modifying the working app structure created instability and risked breaking the final running version. To keep the working app safe, we created a separate contribution-review repository that organizes the final code by responsibility.
+
+✅ **Main repo:** working application  
+✅ **Contribution repo:** individual code contribution breakdown  
+
+---
+
 ### 🏗️ Architecture
 
 #### MVVM Pattern
